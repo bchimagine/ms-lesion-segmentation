@@ -1,1 +1,4 @@
 *.pyc
+events.out.tfevents*
+*.nii
+*.nrrd
