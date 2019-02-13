@@ -1,9 +1,12 @@
 import os
 import tensorflow as tf
 from keras.callbacks import TensorBoard
+import shutil
 
 class TrainValTensorBoard(TensorBoard):
     def __init__(self, log_dir='.\logs', **kwargs):
+		# Remove all previous log files
+        shutil.rmtree(log_dir)
         # Make the original `TensorBoard` log to a subdirectory 'training'
         training_log_dir = os.path.join(log_dir, 'training')
         super(TrainValTensorBoard, self).__init__(training_log_dir, **kwargs)

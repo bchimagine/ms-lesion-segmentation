@@ -26,6 +26,8 @@ with open("config.txt") as file:
 		key = " ".join(key.split())
 		config[key] = val
 		
+config['modified_format'] = "nii"
+		
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"]=config['gpu']
 		
