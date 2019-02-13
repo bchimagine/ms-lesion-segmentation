@@ -1,1 +1,5 @@
 network: 3d-dense-compact
+loss: focal_loss
+learning_rate: 0.001
+gpu: 0
+dim: 256

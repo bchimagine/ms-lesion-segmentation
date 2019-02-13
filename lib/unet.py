@@ -5,6 +5,7 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.regularizers import l2
 import tensorflow as tf
+import losses
 
 class Unet:
     def __init__(self):
@@ -69,12 +70,21 @@ class Unet:
         conv10 = Convolution2D(1, (1, 1), activation='sigmoid')(conv9)
         return conv10
 
-    def model(self):
-        image = Input((dimension_size, dimension_size, 1))
+    def model(self, dimension_size1, dimension_size2, loss="categorical_crossentropy", learning_rate=0.01):
+        image = Input((dimension_size1, dimension_size2, 1))
         # output shape (180, 180, 1)
         softmax_output = self.root_1(image)
         model = Model(inputs=image, outputs=softmax_output)
         metrics = [dice_coef, 'acc']
-        model.compile(optimizer=Adam(lr=0.01), loss=focal_loss,
-                      metrics=metrics)
+        if loss == "dice_loss":
+			model.compile(optimizer=Adam(lr=learning_rate), loss=dice_loss, metrics=metrics)
+		elif loss == "generalized_dice_loss":
+			model.compile(optimizer=Adam(lr=learning_rate), loss=generalized_dice_loss, metrics=metrics)
+		elif loss == "focal_loss":
+			model.compile(optimizer=Adam(lr=learning_rate), loss=focal_loss, metrics=metrics)
+		elif loss == "fbeta_loss":
+			model.compile(optimizer=Adam(lr=learning_rate), loss=fbeta_loss, metrics=metrics)
+		else:
+			model.compile(optimizer=Adam(lr=learning_rate), loss="categorical_crossentropy", metrics=metrics)
+			
         return model
