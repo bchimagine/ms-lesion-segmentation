@@ -26,6 +26,8 @@ with open("config.txt") as file:
 		key = " ".join(key.split())
 		config[key] = val
 		
+config['modified_format'] = "nii"
+		
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"]=config['gpu']
 		
@@ -33,6 +35,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]=config['gpu']
 ############### Build Network Architecture ############################
 
 model = model_import.import_model(config)
+model.load_weights(".\\model\\" + config['model_name'])
 		
 ######################################################################################
 ############### Add Tensorboard Support ############################
@@ -43,6 +46,6 @@ tensorboard.set_model(model)
 ######################################################################################
 ################ Import Data ############################
 
-images, labels = data_import.import_data(config, isTrain=True)
+images, labels = data_import.import_data(config, isTrain=False)
 
 ######################################################################################

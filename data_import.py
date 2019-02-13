@@ -10,6 +10,7 @@ from keras.regularizers import l2
 import tensorflow as tf
 import densenet3DD as densenet
 import numpy as np
+from medpy.io import load, save
 
 import SimpleITK as sitk
 
@@ -92,10 +93,64 @@ def resample(dataPath, origFormat, newFormat):
 							
 #########################################################################################
 
-def import_data(config):
+def import_data(config, isTrain=True):
 
 	origFormat, newFormat = config['raw_format'], config['modified_format']
 	
 	dataPath = ".\\data\\raw_data\\"
 	
 	resample(dataPath, origFormat, newFormat)
+	
+	dataPath = ".\\data\\modified_data\\"
+	
+	print()
+	
+	imgs_final = []
+	labels = []
+	
+	for root, dirs, files in os.walk(dataPath):
+
+		for fileName in sorted(files):
+		
+			if fileName.endswith(newFormat) and "label" not in fileName:
+
+				print(root+'/'+fileName)
+				
+				###### Load Image ###############
+				image_data, image_header = load(root + '/' + fileName)
+				
+				print(np.shape(image_data))
+				
+				if len(imgs_final) == 0:
+					imgs_final = image_data[:]
+				else:
+					imgs_final = np.concatenate((imgs_final,image_data), 2)
+	
+				if isTrain:
+					####### Load Label ##############
+					label_data, label_header = load((root + '/' + fileName).replace('.' + newFormat, '-label.' + newFormat))
+					
+					print(np.shape(label_data))
+					
+					if len(labels) == 0:
+						labels = label_data[:]
+					else:
+						labels = np.concatenate((labels,label_data), 2)
+				
+				if '2d' in config['network']:
+					imgs_final = np.asarray(imgs_final)
+					imgs_final = np.swapaxes(imgs_final,0,2)
+					imgs_final = np.swapaxes(imgs_final,1,2)
+					imgs_final = np.expand_dims(imgs_final, axis=3)
+
+					if isTrain:
+						labels = np.asarray(labels)
+						labels = np.swapaxes(labels,0,2)
+						labels = np.swapaxes(labels,1,2)
+						labels = np.expand_dims(labels, axis=3)
+					
+				print(np.shape(imgs_final))
+				print(np.shape(labels))
+				
+	return (imgs_final, labels)
+            

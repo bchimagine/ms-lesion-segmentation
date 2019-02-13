@@ -8,4 +8,4 @@ dimension_size_z: 256
 sequences: 1
 classes: 1
 raw_format: nii
-modified_format: nii
+model_name: 3D_Dense_Liver.hdf5

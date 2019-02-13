@@ -18,4 +18,4 @@
 	
 	raw_format: "nrrd" or "nii"
 	
-	modified_format: "nrrd" or "nii"
+	model_name: "XXXXX.hdf5"
