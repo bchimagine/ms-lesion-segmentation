@@ -7,6 +7,7 @@ config = {}
 with open("config.txt") as file:
 	for line in file:
 		(key, val) = line.split(':')
+		val = val.replace("\"", "")
 		val = val.strip()
 		val = " ".join(val.split())
 		config[key] = val
