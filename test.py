@@ -35,7 +35,8 @@ os.environ["CUDA_VISIBLE_DEVICES"]=config['gpu']
 ############### Build Network Architecture ############################
 
 model = model_import.import_model(config)
-model.load_weights(".\\model\\" + config['model_name'])
+modelPath = ".\\model\\" + config['model_name']
+model.load_weights(modelPath)
 		
 ######################################################################################
 ############### Add Tensorboard Support ############################
@@ -46,6 +47,26 @@ tensorboard.set_model(model)
 ######################################################################################
 ################ Import Data ############################
 
-images, labels = data_import.import_data(config, isTrain=False)
+if config['resample'] == "true":
+	images, _ = data_import.import_data(config, isTrain=False)
+else:
+	images, _ = data_import.import_data(config, resample=False, isTrain=False)
+
+######################################################################################
+################ Patchwise Support ############################
+
+if config['patch_wise'] == "true":
+	if '2d' in config['network']:
+		print()
+################ 2D not finished yet ################
+#		import patch_wise_2D as patch_wise
+	elif '3d' in config['network']:
+		import patch_wise_3D as patch_wise
+
+######################################################################################
+################ Test ############################
+
+
+
 
 ######################################################################################

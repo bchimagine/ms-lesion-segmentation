@@ -49,7 +49,7 @@ def resample(dataPath, origFormat, newFormat):
 
 	inputCounter = 0
 
-	target_shape = (512, 512, 90)
+	target_shape = (512, 512, 128)
 
 	for root, dirs, files in os.walk(dataPath):
 		
@@ -93,13 +93,16 @@ def resample(dataPath, origFormat, newFormat):
 							
 #########################################################################################
 
-def import_data(config, isTrain=True):
+############## Data Import ########################
+
+def import_data(config, resample=True, isTrain=True):
 
 	origFormat, newFormat = config['raw_format'], config['modified_format']
 	
 	dataPath = ".\\data\\raw_data\\"
 	
-	resample(dataPath, origFormat, newFormat)
+	if resample == True:
+		resample(dataPath, origFormat, newFormat)
 	
 	dataPath = ".\\data\\modified_data\\"
 	
@@ -122,35 +125,59 @@ def import_data(config, isTrain=True):
 				print(np.shape(image_data))
 				
 				if len(imgs_final) == 0:
+					if '3d' in config['network']:
+						image_data = np.expand_dims(image_data, axis=0)
 					imgs_final = image_data[:]
 				else:
-					imgs_final = np.concatenate((imgs_final,image_data), 2)
+					if '2d' in config['network']:
+						imgs_final = np.concatenate((imgs_final,image_data), 2)
+					elif '3d' in config['network']:
+						image_data = np.expand_dims(image_data, axis=0)
+						imgs_final = np.concatenate((imgs_final,image_data), 0)
 	
 				if isTrain:
 					####### Load Label ##############
 					label_data, label_header = load((root + '/' + fileName).replace('.' + newFormat, '-label.' + newFormat))
 					
-					print(np.shape(label_data))
+					if len(label_data[label_data == 1]) == 0:
+						label_data[label_data > 0] = 1.
 					
+					print(np.shape(label_data))
+						
 					if len(labels) == 0:
+						if '3d' in config['network']:
+							label_data = np.expand_dims(label_data, axis=0)
 						labels = label_data[:]
 					else:
-						labels = np.concatenate((labels,label_data), 2)
-				
-				if '2d' in config['network']:
-					imgs_final = np.asarray(imgs_final)
-					imgs_final = np.swapaxes(imgs_final,0,2)
-					imgs_final = np.swapaxes(imgs_final,1,2)
-					imgs_final = np.expand_dims(imgs_final, axis=3)
+						if '2d' in config['network']:
+							labels = np.concatenate((labels,label_data), 2)
+						elif '3d' in config['network']:
+							label_data = np.expand_dims(label_data, axis=0)
+							labels = np.concatenate((labels,label_data), 0)
+						
+	imgs_final = np.asarray(imgs_final)
+	labels = np.asarray(labels)
+			
+	if '2d' in config['network']:
+		
+		imgs_final = np.swapaxes(imgs_final,0,2)
+		imgs_final = np.swapaxes(imgs_final,1,2)
+		imgs_final = np.expand_dims(imgs_final, axis=3)
 
-					if isTrain:
-						labels = np.asarray(labels)
-						labels = np.swapaxes(labels,0,2)
-						labels = np.swapaxes(labels,1,2)
-						labels = np.expand_dims(labels, axis=3)
-					
-				print(np.shape(imgs_final))
-				print(np.shape(labels))
+		if isTrain:
+			labels = np.swapaxes(labels,0,2)
+			labels = np.swapaxes(labels,1,2)
+			labels = np.expand_dims(labels, axis=3)
+			
+	elif '3d' in config['network']:
+	
+		imgs_final = np.expand_dims(imgs_final, axis=4)
+
+		if isTrain:
+			labels = np.expand_dims(labels, axis=4)
+				
+	print(np.shape(imgs_final))
+	print(np.shape(labels))
 				
 	return (imgs_final, labels)
             

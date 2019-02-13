@@ -8,6 +8,8 @@
 	
 	learning_rate: ..., "0.01", "0.005", "0.001", ...
 	
+	decay_rate: "0.95", "0.9", ...
+	
 	gpu: "0", "1", "2", "3", "0,1", "0,2", ..., "0,1,2", "0,1,3", ..., "0,1,2,3"
 	
 	dimension_size_X: ..., "64", "128", "256", "512", ...
@@ -16,6 +18,12 @@
 	
 	classes: "1", ...
 	
+	batch_size: "1", ...
+	
 	raw_format: "nrrd" or "nii"
+	
+	resample: "true" or "false"
+	
+	patch_wise: "true" or "false"
 	
 	model_name: "XXXXX.hdf5"
