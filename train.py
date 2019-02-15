@@ -2,6 +2,7 @@ import os
 import sys
 import tensorflow as tf
 from tensorflow.keras.callbacks import TensorBoard
+#from medpy.io import load, save
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -47,9 +48,9 @@ tensorboard.set_model(model)
 ################ Import Data ############################
 
 if config['resample'] == "true":
-	images, labels = data_import.import_data(config, isTrain=True)
+	images, labels, _ = data_import.import_data(config, isTrain=True)
 else:
-	images, labels = data_import.import_data(config, resample=False, isTrain=True)
+	images, labels, _ = data_import.import_data(config, resample=False, isTrain=True)
 
 ######################################################################################
 ################ Patchwise Support ############################
