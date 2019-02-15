@@ -47,7 +47,7 @@
 		- prediction
 		- raw_data
 	- lib
-		- All (.py) library files
+		- All (.py) library files (You might have to install some other python packages too, like tensorflow, keras, medpy, etc)
 	- model
 		- trained models with formats of (XXX.hd5 or XXX.hdf5)
 - config
