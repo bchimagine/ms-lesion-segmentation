@@ -1,6 +1,6 @@
 # MS Lesion Segmentation
 
-### Config file options:
+### Config file options
 
     network: "2d-unet", "3d-unet", "2d-dense", "3d-dense", "3d-dense-compact"
 	
@@ -38,3 +38,20 @@
 	
 	model_name: "XXXXX.hdf5" or "XXXXX.hd5"
 	(model name located in the model folder)
+	
+### Tree structure of files and directories
+
+- root
+	- data
+		- modified_data
+		- prediction
+		- raw_data
+	- lib
+		- All (.py) library files
+	- model
+		- trained models with formats of (XXX.hd5 or XXX.hdf5)
+- data_import
+- model_import
+- test.py
+- train.py
+
