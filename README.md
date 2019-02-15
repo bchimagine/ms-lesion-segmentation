@@ -1,4 +1,4 @@
-# Medical Image Segmentation
+# MS Lesion Segmentation
 
 ### Config file options:
 
