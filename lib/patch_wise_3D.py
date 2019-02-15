@@ -8,13 +8,14 @@ def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y,
     images = train_images
     labels = train_label
     
-    width = dimension_size_x
-    height = dimension_size_y
-    depth = dimension_size_z
+    width = int(dimension_size_x)
+    height = int(dimension_size_y)
+    depth = int(dimension_size_z)
     
     counter = 0    
     
     for samples in generate_samples(np.shape(train_images)[0], batch_size):
+			
         image_batch = images[samples, :, :, :, :]
         label_batch = labels[samples, :, :, :, :]                        
         
@@ -35,9 +36,9 @@ def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y,
 
             rand = np.random.randint(len(LesiorArg))
 
-            x_index = LesiorArg[rand][1]
-            y_index = LesiorArg[rand][2]
-            z_index = LesiorArg[rand][3]
+            x_index = LesiorArg[rand][0]
+            y_index = LesiorArg[rand][1]
+            z_index = LesiorArg[rand][2]
             
             x_index += np.random.randint(-20, 20)
             y_index += np.random.randint(-20, 20)
@@ -58,12 +59,12 @@ def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y,
             elif z_index < depth//2:
                 z_index = depth//2
 
-            image_batch = images[samples, x_index-width/2:x_index+width/2, y_index-height/2:y_index+height/2, z_index-height/2:z_index+height/2]
-            label_batch = labels[samples, x_index-width/2:x_index+width/2, y_index-height/2:y_index+height/2, z_index-height/2:z_index+height/2]
+            image_batch = images[samples, int(x_index-width/2):int(x_index+width/2), int(y_index-height/2):int(y_index+height/2), int(z_index-height/2):int(z_index+height/2)]
+            label_batch = labels[samples, int(x_index-width/2):int(x_index+width/2), int(y_index-height/2):int(y_index+height/2), int(z_index-height/2):int(z_index+height/2)]
             
-            if counter < 1000 and np.count_nonzero(label_batch[0,width/4:3*width/4,height/4:3*height/4,depth/4:3*depth/4,0]) < 50:
+            if counter < 1000 and np.count_nonzero(label_batch[0,int(width/4):int(3*width/4),int(height/4):int(3*height/4),int(depth/4):int(3*depth/4),0]) < 50:
                 continue
-            elif counter >= 1000 and np.count_nonzero(label_batch[0,width/4:3*width/4,height/4:3*height/4,depth/4:3*depth/4,0]) < 5:
+            elif counter >= 1000 and np.count_nonzero(label_batch[0,int(width/4):int(3*width/4),int(height/4):int(3*height/4),int(depth/4):int(3*depth/4),0]) < 5:
                 continue
             else:
                 break
@@ -72,10 +73,6 @@ def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y,
             
         for i in range(image_batch.shape[0]):
             image_batch[i], label_batch[i] = augment_sample(image_batch[i], label_batch[i])
-            
-        if counter % 100 == 0:
-            
-            print(samples)
             
         counter += 1
             

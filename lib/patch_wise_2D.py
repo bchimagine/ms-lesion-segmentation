@@ -3,49 +3,43 @@ import numpy as np
 
 ####################### PATCH WISE #################################
 
-def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y, dimension_size_z, batch_size = 1):
+def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y, batch_size = 1):
     
     images = train_images
     labels = train_label
     
-    width = dimension_size_x
-    height = dimension_size_y
-    depth = dimension_size_z
+    width = int(dimension_size_x)
+    height = int(dimension_size_y)
     
     counter = 0    
     
     for samples in generate_samples(np.shape(train_images)[0], batch_size):
-        image_batch = images[samples, :, :, :, :]
-        label_batch = labels[samples, :, :, :, :]                        
+			
+        image_batch = images[samples, :, :, :]
+        label_batch = labels[samples, :, :, :]                        
         
         if counter < 100:
-            if np.count_nonzero(label_batch[0,:,:,:,0]) < 100 or \
-                np.count_nonzero(image_batch[0,:,:,:,0]) == 0 or \
-                np.count_nonzero(image_batch[0,:,:,:,1]) == 0 or \
-                np.count_nonzero(image_batch[0,:,:,:,2]) == 0:
+            if np.count_nonzero(label_batch[0,:,:,0]) < 100 or \
+                np.count_nonzero(image_batch[0,:,:,0]) == 0:
                 continue
                 
         else:
-            if np.count_nonzero(label_batch[0,:,:,:,0]) < 10 or \
-                np.count_nonzero(image_batch[0,:,:,:,0]) == 0 or \
-                np.count_nonzero(image_batch[0,:,:,:,1]) == 0 or \
-                np.count_nonzero(image_batch[0,:,:,:,2]) == 0:
+            if np.count_nonzero(label_batch[0,:,:,0]) < 10 or \
+                np.count_nonzero(image_batch[0,:,:,0]) == 0:
                 continue
         
-        LesiorArg = zip(*np.where(labels[samples,:,:,:,0] == 1))
+        LesiorArg = list(zip(*np.where(labels[samples,:,:,0] == 1)))
         np.random.shuffle(LesiorArg)
         
         while True:
 
             rand = np.random.randint(len(LesiorArg))
 
-            x_index = LesiorArg[rand][1]
-            y_index = LesiorArg[rand][2]
-            z_index = LesiorArg[rand][3]
+            x_index = LesiorArg[rand][0]
+            y_index = LesiorArg[rand][1]
             
             x_index += np.random.randint(-20, 20)
             y_index += np.random.randint(-20, 20)
-            z_index += np.random.randint(-20, 20)
             
             if x_index > np.shape(images)[1] - width//2:
                 x_index = np.shape(images)[1] - width//2
@@ -56,18 +50,13 @@ def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y,
                 y_index = np.shape(images)[2] - height//2
             elif y_index < height//2:
                 y_index = height//2
-                
-            if z_index > np.shape(images)[3] - depth//2:
-                z_index = np.shape(images)[3] - depth//2
-            elif z_index < depth//2:
-                z_index = depth//2
 
-            image_batch = images[samples, x_index-width/2:x_index+width/2, y_index-height/2:y_index+height/2, z_index-height/2:z_index+height/2]
-            label_batch = labels[samples, x_index-width/2:x_index+width/2, y_index-height/2:y_index+height/2, z_index-height/2:z_index+height/2]
+            image_batch = images[samples, int(x_index-width/2):int(x_index+width/2), int(y_index-height/2):int(y_index+height/2)]
+            label_batch = labels[samples, int(x_index-width/2):int(x_index+width/2), int(y_index-height/2):int(y_index+height/2)]
             
-            if counter < 1000 and np.count_nonzero(label_batch[0,width/4:3*width/4,height/4:3*height/4,depth/4:3*depth/4,0]) < 50:
+            if counter < 100 and np.count_nonzero(label_batch[0,int(width/4):int(3*width/4),int(height/4):int(3*height/4),0]) < 50:
                 continue
-            elif counter >= 1000 and np.count_nonzero(label_batch[0,width/4:3*width/4,height/4:3*height/4,depth/4:3*depth/4,0]) < 5:
+            elif counter >= 100 and np.count_nonzero(label_batch[0,int(width/4):int(3*width/4),int(height/4):int(3*height/4),0]) < 5:
                 continue
             else:
                 break
@@ -76,14 +65,6 @@ def generate_batch(train_images,train_label, dimension_size_x, dimension_size_y,
             
         for i in range(image_batch.shape[0]):
             image_batch[i], label_batch[i] = augment_sample(image_batch[i], label_batch[i])
-            
-        if counter % 100 == 0:
-            
-            print(samples)
-            
-            imshow(label_batch[0,:,:,depth/2,0],
-                       image_batch[0,:,:,depth/2,3],
-                       image_batch[0,:,:,depth/2,2],title=['label','003','002'])  
             
         counter += 1
             
@@ -101,16 +82,8 @@ def generate_samples(NumberOfSamples, batch_size):
 
 def augment_sample(image, label):
     # Flipping
-    if np.random.randint(4) == 1:
+    if np.random.randint(2) == 1:
         image = np.rot90(image, 2, (0,1))
         label = np.rot90(label, 2, (0,1))
-    
-    elif np.random.randint(4) == 2:
-        image = np.rot90(image, 2, (0,2))
-        label = np.rot90(label, 2, (0,2))
-    
-    elif np.random.randint(4) == 3:
-        image = np.rot90(image, 2, (1,2))
-        label = np.rot90(label, 2, (1,2))
     
     return(image, label)
