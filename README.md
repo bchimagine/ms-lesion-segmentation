@@ -50,6 +50,7 @@
 		- All (.py) library files
 	- model
 		- trained models with formats of (XXX.hd5 or XXX.hdf5)
+- config
 - data_import
 - model_import
 - test.py
