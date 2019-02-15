@@ -97,6 +97,6 @@ for i in range(len(images)):
 	predictions_smooth[predictions_smooth >= 0.5] = 1
 	predictions_smooth[predictions_smooth < 0.5] = 0
 	
-	save(predictions_smooth[0],file_names[i].replace('modified_data', 'prediction'))
+	save(predictions_smooth,file_names[i].replace('modified_data', 'prediction'))
 
 ######################################################################################
