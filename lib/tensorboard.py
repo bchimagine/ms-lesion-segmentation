@@ -2,9 +2,20 @@ import os
 import tensorflow as tf
 from keras.callbacks import TensorBoard
 import shutil
+from sys import platform
 
 class TrainValTensorBoard(TensorBoard):
-    def __init__(self, log_dir='.\logs', **kwargs):
+    if platform == "linux" or platform == "linux2":
+        # linux
+        logDir = './/logs'
+    elif platform == "darwin":
+        # OS X
+        logDir = './/logs'
+    elif platform == "win32":
+        # Windows...
+        logDir = '.\\logs'
+    
+    def __init__(self, log_dir=logDir, **kwargs):
 		# Remove all previous log files
         shutil.rmtree(log_dir)
         # Make the original `TensorBoard` log to a subdirectory 'training'
