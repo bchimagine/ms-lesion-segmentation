@@ -13,8 +13,18 @@ import numpy as np
 from medpy.io import load, save
 
 import SimpleITK as sitk
-
+from sys import platform
 import os
+
+if platform == "linux" or platform == "linux2":
+	# linux
+	separator = '//'
+elif platform == "darwin":
+	# OS X
+	separator = '//'
+elif platform == "win32":
+	# Windows...
+	separator = '\\'
 
 def resample_image(itk_image, out_spacing=(1.0, 1.0, 1.0), is_label=False):
     
@@ -66,10 +76,10 @@ def resample(dataPath, origFormat, newFormat):
 			
 				is_label = True if 'label' in fileName else False
 
-				print(root+'/'+fileName)
+				print(root+separator+fileName)
 
 				print('--------------------------------------------')
-				temp = sitk.ReadImage(root+'/'+fileName, sitk.sitkFloat32)
+				temp = sitk.ReadImage(root+separator+fileName, sitk.sitkFloat32)
 				
 				print(temp.GetSize())
 				print(temp.GetSpacing())
@@ -87,9 +97,9 @@ def resample(dataPath, origFormat, newFormat):
 				print(temp.GetSpacing())
 				print('--------------------------------------------')
 
-				print(modified+'/'+fileName.replace(origFormat,newFormat))
+				print(modified+separator+fileName.replace(origFormat,newFormat))
 				sitk.WriteImage(sitk.Cast(sitk.RescaleIntensity(temp), sitk.sitkFloat32),
-								modified+'/'+fileName.replace(origFormat,newFormat))
+								modified+separator+fileName.replace(origFormat,newFormat))
 							
 #########################################################################################
 
@@ -99,12 +109,12 @@ def import_data(config, resample=True, isTrain=True):
 
 	origFormat, newFormat = config['raw_format'], config['modified_format']
 	
-	dataPath = ".\\data\\raw_data\\"
+	dataPath = "."+separator+"data"+separator+"raw_data"+separator
 	
 	if resample == True:
 		resample(dataPath, origFormat, newFormat)
 	
-	dataPath = ".\\data\\modified_data\\"
+	dataPath = "."+separator+"data"+separator+"modified_data"+separator
 	
 	print()
 	
@@ -118,13 +128,13 @@ def import_data(config, resample=True, isTrain=True):
 		
 			if fileName.endswith('000.'+newFormat) and "label" not in fileName:
 
-				print(root+'/'+fileName)
-				file_names.append(root+'/'+fileName)
+				print(root+separator+fileName)
+				file_names.append(root+separator+fileName)
 				
 				###### Load Image ###############
 				image_data_all = []
 				for seq in range(int(config['sequences'])):
-					image_data, image_header = load(root + '/' + fileName.replace('0.', str(seq)+'.'))
+					image_data, image_header = load(root + separator + fileName.replace('0.', str(seq)+'.'))
 					
 					image_data = np.expand_dims(image_data, axis=0)
 					
@@ -150,7 +160,7 @@ def import_data(config, resample=True, isTrain=True):
 	
 				if isTrain:
 					####### Load Label ##############
-					label_data, label_header = load((root + '/' + fileName).replace('000.' + newFormat, 'label.' + newFormat))
+					label_data, label_header = load((root + separator + fileName).replace('000.' + newFormat, 'label.' + newFormat))
 					
 					label_data = np.expand_dims(label_data, axis=0)
 				
