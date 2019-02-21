@@ -8,7 +8,15 @@ from medpy.io import load, save
 import warnings
 warnings.filterwarnings("ignore")
 
-sys.path.insert(0, os.getcwd()+'\lib')
+if platform == "linux" or platform == "linux2":
+	# linux
+	sys.path.insert(0, os.getcwd()+'//lib')
+elif platform == "darwin":
+	# OS X
+	sys.path.insert(0, os.getcwd()+'//lib')
+elif platform == "win32":
+	# Windows...
+	sys.path.insert(0, os.getcwd()+'\\lib')
 
 ############### Import Configuration ############################
 
@@ -45,7 +53,16 @@ os.environ["CUDA_VISIBLE_DEVICES"]=config['gpu']
 
 	#### Or load the whole model and weights all together ####
 	######## don't need to know anything about the trained model #########
-modelPath = ".\\model\\" + config['model_name']
+if platform == "linux" or platform == "linux2":
+	# linux
+	modelPath = ".//model//" + config['model_name']
+elif platform == "darwin":
+	# OS X
+	modelPath = ".//model//" + config['model_name']
+elif platform == "win32":
+	# Windows...
+	modelPath = ".\\model\\" + config['model_name']
+	
 model = load_model(modelPath, custom_objects={'focal_loss': eval("loss.focal_loss"), 'dice': eval("loss.dice_loss"), 'tversky': eval("loss.fbeta_loss")})
 		
 ######################################################################################
