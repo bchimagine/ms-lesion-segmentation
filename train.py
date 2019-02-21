@@ -7,7 +7,15 @@ from tensorflow.keras.callbacks import TensorBoard
 import warnings
 warnings.filterwarnings("ignore")
 
-sys.path.insert(0, os.getcwd()+'\lib')
+if platform == "linux" or platform == "linux2":
+	# linux
+	sys.path.insert(0, os.getcwd()+'//lib')
+elif platform == "darwin":
+	# OS X
+	sys.path.insert(0, os.getcwd()+'//lib')
+elif platform == "win32":
+	# Windows...
+	sys.path.insert(0, os.getcwd()+'\\lib')
 
 ############### Import Configuration ############################
 
@@ -36,7 +44,15 @@ os.environ["CUDA_VISIBLE_DEVICES"]=config['gpu']
 ############### Build Network Architecture ############################
 
 model = model_import.import_model(config)
-modelPath = ".\\model\\" + config['model_name']
+if platform == "linux" or platform == "linux2":
+	# linux
+	modelPath = ".//model//" + config['model_name']
+elif platform == "darwin":
+	# OS X
+	modelPath = ".//model//" + config['model_name']
+elif platform == "win32":
+	# Windows...
+	modelPath = ".\\model\\" + config['model_name']
 		
 ######################################################################################
 ############### Add Tensorboard Support ############################
