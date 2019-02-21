@@ -43,9 +43,13 @@
 
 - root
 	- data
-		- modified_data
-		- prediction
-		- raw_data
+		- modified_data		(Put your data here, only if resample is False and you don't want to resample)
+		- predictiona		(Your predictions will be saved here)
+		- raw_data			(Put your data here, only if resample is True and you want to resample)
+			- XXX_000.nii
+			- XXX_001.nii
+			- XXX_002.nii
+			- ...
 	- lib
 		- All (.py) library files (You might have to install some other python packages too, like tensorflow, keras, medpy, etc)
 	- model
