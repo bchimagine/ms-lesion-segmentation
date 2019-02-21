@@ -43,9 +43,14 @@
 
 - root
 	- data
-		- modified_data		(Put your data here, only if resample is False and you don't want to resample)
-		- prediction		(Your predictions will be saved here)
-		- raw_data			(Put your data here, only if resample is True and you want to resample)
+		- modified_data		   (Put your data here, only if resample is False and you don't want to resample)
+			- XXX_000.nii
+			- XXX_001.nii
+			- XXX_002.nii
+			- ...	
+		- prediction		   (Your predictions will be saved here)
+			- XXX_prediction.nii
+		- raw_data		       (Put your data here, only if resample is True and you want to resample)
 			- XXX_000.nii
 			- XXX_001.nii
 			- XXX_002.nii
